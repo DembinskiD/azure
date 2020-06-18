@@ -1,0 +1,15 @@
+.temperature {
+  font-size: xx-large;
+}
+
+.mat-list-base .mat-list-item .mat-list-item-content {
+  justify-content: center;
+}
+
+.mt-25 {
+  margin-top: 25px;
+}
+
+.mb-0 {
+  margin-bottom: 0px;
+}

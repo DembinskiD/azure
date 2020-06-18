@@ -1,0 +1,24 @@
+<mat-form-field>
+  <mat-label>Choose city</mat-label>
+  <mat-select [(ngModel)]="selectedCity" (selectionChange)="onCityChanged()">
+    <mat-option *ngFor="let city of cities" [value]="city.value">
+      {{ city.viewValue }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<div class="mt-25" *ngIf="weatherConditions$ | async as wc; else loading">
+  <div class="mat-h1 mb-0">
+    {{ wc.location.name }}
+  </div>
+  <span *ngIf="wc.location.region">{{ wc.location.region }}</span> / {{ wc.location.country }}
+  <div class="mt-25">
+    <div>{{ wc.current.condition.text }}</div>
+    <div><img [src]="wc.current.condition.icon" /></div>
+    <div class="temperature">{{ wc.current.temp_c }}°C</div>
+  </div>
+</div>
+<ng-template #loading>
+  <div class="container">
+    Loading stuff...
+  </div>
+</ng-template>

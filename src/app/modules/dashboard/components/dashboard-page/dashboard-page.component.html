@@ -1,0 +1,43 @@
+<div class="grid-container">
+  <mat-toolbar color="primary">Dashboard</mat-toolbar>
+  <mat-grid-list cols="2" rowHeight="fit">
+    <mat-grid-tile>
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>
+            Weather
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="dashboard-card-content">
+          <app-weather></app-weather>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile>
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>
+            Exchange Rates
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="dashboard-card-content">
+          <app-exchange-rates></app-exchange-rates>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile colspan="2">
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>
+            Stocks
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="dashboard-card-content">
+          <app-stocks></app-stocks>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>

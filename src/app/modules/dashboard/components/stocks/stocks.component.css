@@ -1,0 +1,16 @@
+.dropping {
+  color: red;
+}
+
+.raising {
+  color: green;
+}
+
+.mat-column-t {
+  width: 30px;
+}
+
+.v-centered {
+  display: flex;
+  align-items: center;
+}

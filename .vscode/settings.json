@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/3fe5d57c-6414-481a-a6a9-b420f7abeff5/resourceGroups/appsvc_windows_centralus/providers/Microsoft.Web/sites/dazuDashboardHost2",
+    "appService.deploySubpath": "dist"
+}
