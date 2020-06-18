@@ -1,14 +1,38 @@
 const express = require("express");
 const proxy = require("express-http-proxy");
+const {ServiceBusClient, ReceiveMode} = require("@azure/service-bus");
+const { SingleEntryPlugin } = require("webpack");
 
 const publicweb = process.env.PUBLICWEB || ".";
 const app = express();
 
-const weatherApi = process.env.WEATHER_API || "https://api.weatherapi.com";
-const exchangeApi = process.env.EXCHANGE_API || "www.ecb.europa.eu";
-const stocksApi = process.env.STOCKS_API || "finnhub.io";
+const busClient = ServiceBusClient.createFromConnectionString("Endpoint=sb://exchangedatasbus.servicebus.windows.net/;SharedAccessKeyName=getPolicy;SharedAccessKey=fZIRlwOZ6pCoq1u0fDCCX0vE9MCa/eQxBvVeu/A74KE=;EntityPath=ratesqueue");
+const queueClient = busClient.createQueueClient("ratesqueue");
+const receiver = queueClient.createReceiver(ReceiveMode.peekLock);
+
+
+const weatherApi = process.env.WEATHER_API || "https://weatherfunctionforproject.azurewebsites.net/api/readWeather?code=2eYxF0Ouezkr/auK5YxLUL2JqGwzQu4gPSOHRLbghIaDmHaW5kkeGQ==";
+const exchangeApi = process.env.EXCHANGE_API || "https://exchangeratesforproject.azurewebsites.net/api/getRates?code=jxPYVDVy0Uhs3TaIDOm/LSfSOxAiZMMEZwxzIKDyX8KY9spqjJaMJw==";
+const stocksApi = process.env.STOCKS_API || "https://stockforproject.azurewebsites.net/api/readFromDB?code=5vILXx059fFR8tXt1gsK42PfpkgS5YgaBIbuB2hcj9xXZnuG/t8n1w==";
 
 const port = process.env.PORT || "3000";
+
+const beCurrent = async() => {
+  let message = await receiver.receiveMessages(1);
+  message = message[0].body;
+  console.log(message)
+  // while(true) {
+  //   let match = await receiver.receiveMessages(1);
+  //   if(message != match[0].body) {
+  //     message = match[0].body;
+  //     console.log(message);
+  //     app.use(reload(__dirname+"/"));
+  //   }
+  //   await sleep(1000);
+  // }
+}
+
+beCurrent();
 
 app.use(express.static(publicweb));
 app.use("/api/weather", proxy(weatherApi));

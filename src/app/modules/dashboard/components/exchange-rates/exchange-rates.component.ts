@@ -12,8 +12,8 @@ import { ExchangeRate } from '../../models/exchange-rate';
 import { DashboardService } from '../../dashboard.service';
 import { tap, finalize, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { ServiceBusClient, ReceiveMode } from "@azure/service-bus";
-import { async } from '@angular/core/testing';
+// import { ServiceBusClient, ReceiveMode } from "@azure/service-bus";
+// import { async } from '@angular/core/testing';
 
 
 @Component({
@@ -38,9 +38,9 @@ export class ExchangeRatesComponent
 
     this.loading = true;
 
-    const sBClient = ServiceBusClient.createFromConnectionString("Endpoint=sb://exchangedatasbus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=sRj1kyt44p0Rc82MZXKn3ISRhPkEsa7iCTa8oIfqnD4=");
-    const queueClient = sBClient.createQueueClient("ratesqueue");
-    const receiver = queueClient.createReceiver(ReceiveMode.peekLock);
+    // const sBClient = ServiceBusClient.createFromConnectionString("Endpoint=sb://exchangedatasbus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=sRj1kyt44p0Rc82MZXKn3ISRhPkEsa7iCTa8oIfqnD4=");
+    // const queueClient = sBClient.createQueueClient("ratesqueue");
+    // const receiver = queueClient.createReceiver(ReceiveMode.peekLock);
     this.dashboardService
       .getExchangeRates()
       .pipe(
