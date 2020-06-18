@@ -42,4 +42,4 @@ app.get("*", (req, res) => {
   res.sendFile(`index.html`, { root: publicweb });
 });
 
-app.listen(port, () => console.log(`API running on localhost:${port}`));
+app.listen(port, () => console.log(`API running on localhodst:${port}`));

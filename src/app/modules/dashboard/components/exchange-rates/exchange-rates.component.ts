@@ -39,8 +39,8 @@ export class ExchangeRatesComponent
     this.loading = true;
 
     const sBClient = ServiceBusClient.createFromConnectionString("Endpoint=sb://exchangedatasbus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=sRj1kyt44p0Rc82MZXKn3ISRhPkEsa7iCTa8oIfqnD4=");
-    // const queueClient = sBClient.createQueueClient("ratesqueue");
-    // const receiver = queueClient.createReceiver(ReceiveMode.peekLock);
+    const queueClient = sBClient.createQueueClient("ratesqueue");
+    const receiver = queueClient.createReceiver(ReceiveMode.peekLock);
     this.dashboardService
       .getExchangeRates()
       .pipe(
@@ -50,16 +50,6 @@ export class ExchangeRatesComponent
       )
       .subscribe();
   }
-  //   const msgHandler = async (message) => {
-      
-  //   };
-  //   const errHandler = (error) => {
-  //     console.log(error);
-  //   };
-
-  //   receiver.registerMessageHandler(msgHandler, errHandler);
-
-  // }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
