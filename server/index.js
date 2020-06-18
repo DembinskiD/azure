@@ -3,6 +3,14 @@ const proxy = require("express-http-proxy");
 const {ServiceBusClient, ReceiveMode} = require("@azure/service-bus");
 const { SingleEntryPlugin } = require("webpack");
 
+var reload = require("express-reload");
+
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  })
+}
+
 const publicweb = process.env.PUBLICWEB || ".";
 const app = express();
 
@@ -21,15 +29,15 @@ const beCurrent = async() => {
   let message = await receiver.receiveMessages(1);
   message = message[0].body;
   console.log(message)
-  // while(true) {
-  //   let match = await receiver.receiveMessages(1);
-  //   if(message != match[0].body) {
-  //     message = match[0].body;
-  //     console.log(message);
-  //     app.use(reload(__dirname+"/"));
-  //   }
-  //   await sleep(1000);
-  // }
+  while(true) {
+    let match = await receiver.receiveMessages(1);
+    if(message != match[0].body) {
+      message = match[0].body;
+      console.log(message);
+      app.use(reload(__dirname+"/"));
+    }
+    await sleep(1000);
+  }
 }
 
 beCurrent();
