@@ -25,22 +25,38 @@ const stocksApi = process.env.STOCKS_API || "https://stockforproject.azurewebsit
 
 const port = process.env.PORT || "3000";
 
-const beCurrent = async() => {
+const updateData = async () => {
   let message = await receiver.receiveMessages(1);
   message = message[0].body;
-  console.log(message)
+  console.log("ok");
   while(true) {
     let match = await receiver.receiveMessages(1);
     if(message != match[0].body) {
       message = match[0].body;
-      console.log(message);
-      app.use(reload(__dirname+"/"));
+      // console.log(message);
+      // app.use(reload(__dirname+"/"));
+      console.log("ok2");
+      app.get("/admin", (req, res) => {
+        res.send(
+          `PORT: ` +
+            port +
+            `<br>WEATHER_API: ` +
+            weatherApi +
+            `<br>EXCHANGE_API: ` +
+            exchangeApi +
+            `<br>STOCKS_API: ` +
+            stocksApi
+        );
+      });
     }
     await sleep(1000);
   }
 }
 
-beCurrent();
+updateData();
+
+
+
 
 app.use(express.static(publicweb));
 app.use("/api/weather", proxy(weatherApi));
@@ -50,6 +66,9 @@ app.use(
     https: true,
   })
 );
+
+
+
 app.use(
   "/api/stocks",
   proxy(stocksApi, {
