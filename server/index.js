@@ -14,10 +14,13 @@ function sleep(ms) {
 const publicweb = process.env.PUBLICWEB || ".";
 const app = express();
 
-const busClient = ServiceBusClient.createFromConnectionString("Endpoint=sb://exchangedatasbus.servicebus.windows.net/;SharedAccessKeyName=getPolicy;SharedAccessKey=fZIRlwOZ6pCoq1u0fDCCX0vE9MCa/eQxBvVeu/A74KE=;EntityPath=ratesqueue");
-const queueClient = busClient.createQueueClient("ratesqueue");
-const receiver = queueClient.createReceiver(ReceiveMode.peekLock);
+const exchangeBusClient = ServiceBusClient.createFromConnectionString("Endpoint=sb://exchangedatasbus.servicebus.windows.net/;SharedAccessKeyName=getPolicy;SharedAccessKey=fZIRlwOZ6pCoq1u0fDCCX0vE9MCa/eQxBvVeu/A74KE=;EntityPath=ratesqueue");
+const exchangeQueueClient = exchangeBusClient.createQueueClient("ratesqueue");
+const exchangeReceiver = exchangeQueueClient.createReceiver(ReceiveMode.peekLock);
 
+const stockSBClient = ServiceBusClient.createFromConnectionString("Endpoint=sb://projectongoingservicebus.servicebus.windows.net/;SharedAccessKeyName=ListenPolicy;SharedAccessKey=H8QuUFRCqU1rViwfkrCrwSJb0LcaXMlFtm/09icYF0Y=;EntityPath=stockqueue");
+const stockQueueClient = stockSBClient.createQueueClient("stockqueue");
+const stockReceiver = stockQueueClient.createReceiver(ReceiveMode.peekLock);
 
 const weatherApi = process.env.WEATHER_API || "https://weatherfunctionforproject.azurewebsites.net/api/readWeather?code=2eYxF0Ouezkr/auK5YxLUL2JqGwzQu4gPSOHRLbghIaDmHaW5kkeGQ==";
 const exchangeApi = process.env.EXCHANGE_API || "https://exchangeratesforproject.azurewebsites.net/api/getRates?code=jxPYVDVy0Uhs3TaIDOm/LSfSOxAiZMMEZwxzIKDyX8KY9spqjJaMJw==";
@@ -25,17 +28,14 @@ const stocksApi = process.env.STOCKS_API || "https://stockforproject.azurewebsit
 
 const port = process.env.PORT || "3000";
 
-const updateData = async () => {
-  let message = await receiver.receiveMessages(1);
+const updateStockData = async () => {
+  let message = await stockReceiver.receiveMessages(1);
   message = message[0].body;
-  console.log("ok");
   while(true) {
-    let match = await receiver.receiveMessages(1);
+    let match = await stockReceiver.receiveMessages(1);
     if(message != match[0].body) {
       message = match[0].body;
-      // console.log(message);
-      // app.use(reload(__dirname+"/"));
-      console.log("ok2");
+      console.log("stkData");
       app.get("/admin", (req, res) => {
         res.send(
           `PORT: ` +
@@ -53,7 +53,35 @@ const updateData = async () => {
   }
 }
 
-updateData();
+const updateExchangeData = async () => {
+  let message = await exchangeReceiver.receiveMessages(1);
+  message = message[0].body;
+  while(true) {
+    let match = await exchangeReceiver.receiveMessages(1);
+    if(message != match[0].body) {
+      message = match[0].body;
+      console.log("exData");
+      app.get("/admin", (req, res) => {
+        res.send(
+          `PORT: ` +
+            port +
+            `<br>WEATHER_API: ` +
+            weatherApi +
+            `<br>EXCHANGE_API: ` +
+            exchangeApi +
+            `<br>STOCKS_API: ` +
+            stocksApi
+        );
+      });
+    }
+    await sleep(1000);
+  }
+}
+
+
+
+updateExchangeData();
+updateStockData();
 
 
 
